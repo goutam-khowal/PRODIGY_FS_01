@@ -92,7 +92,8 @@ function Secret({ email }) {
             </h3>
             <div className="bg-black/60 rounded-lg p-4 font-mono text-sm text-green-400 border border-green-500/30">
               <p className="text-center">
-                "The secret of getting ahead is getting started." - Mark Twain
+                &quot;The secret of getting ahead is getting started.&quot; –
+                Mark Twain
               </p>
               <p className="text-center mt-2 text-xs text-gray-500">
                 Message authenticated • Timestamp: {new Date().toLocaleString()}
