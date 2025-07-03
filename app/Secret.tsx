@@ -2,7 +2,11 @@
 import React from "react";
 import { Shield, Lock } from "lucide-react";
 
-function Secret({ email }) {
+interface SecretProps {
+  email?: string;
+}
+
+function Secret({ email }: SecretProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated Background Elements */}
