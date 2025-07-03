@@ -1,133 +1,146 @@
-🔐 Next.js + NextAuth + Drizzle + PostgreSQL – Secure Auth Starter
-This project is a secure authentication starter kit built with:
+# Next.js Authentication Starter
 
-✅ Next.js (App Router)
+A secure authentication system built with Next.js, NextAuth.js, Drizzle ORM, and PostgreSQL.
 
-✅ NextAuth.js (email + password login)
+## Features
 
-✅ Drizzle ORM + PostgreSQL (Neon or local)
+- **Authentication**: Email/password login with NextAuth.js
+- **Database**: PostgreSQL with Drizzle ORM
+- **Security**: Password hashing, JWT sessions, route protection
+- **UI**: Responsive design with Tailwind CSS
+- **Role-based Access**: Admin and user roles
 
-✅ Tailwind CSS (for styling)
+## Tech Stack
 
-✅ Project Purpose
-This repository is part of Task 1 for a full stack assignment:
+- Next.js 14 (App Router)
+- NextAuth.js v4
+- Drizzle ORM
+- PostgreSQL
+- Tailwind CSS
+- TypeScript
 
-"Implement a user authentication system with secure login and registration functionality. Users should be able to sign up, login securely, and access protected routes only after successful authentication."
+## Quick Start
 
-🗂️ Project Structure
-graphql
-Copy
-Edit
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment**
+   
+   Create `.env.local`:
+   ```env
+   DATABASE_URL=your_postgres_connection_string
+   NEXTAUTH_SECRET=your_secure_jwt_secret
+   NEXTAUTH_URL=http://localhost:3000
+   ```
+
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+## Project Structure
+
+```
 app/
-├── api/ # API routes (NextAuth, register, etc.)
-├── login/ # Login page UI
-├── register/ # Registration page UI
-├── protected/ # Protected content (accessible after login)
-├── Secret.tsx # Example protected component
-├── auth.ts # Session helper (getServerSession)
-├── auth.config.ts # NextAuth configuration
-├── db.ts # DB setup using Drizzle ORM
-├── form.tsx # Reusable form component
-├── layout.tsx # Root layout
-├── Navbar.tsx # Navigation bar
-├── page.tsx # Homepage
-├── submit-button.tsx # Button component
-├── globals.css # Tailwind CSS global styles
-At the root level:
+├── api/
+│   ├── auth/[...nextauth]/     # NextAuth API routes
+│   └── register/               # User registration
+├── login/                      # Login page
+├── register/                   # Registration page
+├── protected/                  # Protected routes
+└── components/                 # Reusable components
 
-bash
-Copy
-Edit
-.
-├── middleware.ts # Route protection via NextAuth
-├── .env.local # Environment config (DB, Auth secret, etc.)
-├── tailwind.config.ts # Tailwind configuration
-├── tsconfig.json # TypeScript settings
-├── package.json # Dependencies and scripts
-├── README.md # You’re reading it 😄
-🔐 Features Implemented
-✅ Secure email + password login using NextAuth (Credentials Provider)
+lib/
+├── auth.config.ts             # NextAuth configuration
+├── db.ts                      # Database setup
+└── schema.ts                  # Database schema
 
-✅ JWT-based session management
+middleware.ts                  # Route protection
+```
 
-✅ Password hashing using bcryptjs
+## Authentication Flow
 
-✅ Role-based access control (admin/user)
+1. User registers with email/password
+2. Password is hashed and stored in database
+3. User logs in via NextAuth.js
+4. JWT session is created
+5. Protected routes are accessible with valid session
 
-✅ Route protection via middleware.ts and getServerSession()
+## Route Protection
 
-✅ Clean, responsive UI with Tailwind CSS
+Protected routes are secured using middleware:
 
-🧪 Getting Started
-
-1. Install Dependencies
-   bash
-   Copy
-   Edit
-   pnpm install # or npm install
-2. Setup Environment
-   Create a .env.local file with:
-
-env
-Copy
-Edit
-DATABASE_URL=your_postgres_url
-NEXTAUTH_SECRET=your_secure_generated_secret
-NEXTAUTH_URL=http://localhost:3000
-Use generate-secret.vercel.app for the secret.
-
-3. Run Development Server
-   bash
-   Copy
-   Edit
-   pnpm dev
-   🔄 Auth Flow
-   User registers via /register (stored with hashed password)
-
-User logs in via /login (NextAuth validates credentials)
-
-Session is stored via JWT
-
-middleware.ts and getServerSession restrict protected content
-
-Session contains role (user/admin) for future use in RBAC
-
-🔐 Route Protection Example
-ts
-Copy
-Edit
+```typescript
 // middleware.ts
-import { withAuth } from "next-auth/middleware";
+import { withAuth } from "next-auth/middleware"
 
 export default withAuth({
-callbacks: {
-authorized: ({ token }) => !!token,
-},
-});
+  callbacks: {
+    authorized: ({ token }) => !!token,
+  },
+})
 
 export const config = {
-matcher: ["/protected/:path*"],
-};
-🧰 Stack
-Layer Tool
-Frontend Next.js (App Router)
-Backend API Routes
-Auth NextAuth.js
-ORM Drizzle
-DB PostgreSQL (Neon)
-Styling Tailwind CSS
-Hashing bcryptjs
-Session JWT
+  matcher: ["/protected/:path*"]
+}
+```
 
-🔜 Task 2 Preview: Employee Management System
-You'll build on this project by adding:
+## Database Schema
 
-👥 Admin-only employee dashboard
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  role VARCHAR(20) DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
 
-📇 CRUD functionality for employee records
+## Environment Variables
 
-🛡️ Server-side validation & auth protection
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | JWT signing secret (min 32 chars) |
+| `NEXTAUTH_URL` | Application URL |
 
-✨ Credits
-Made with ❤️ by Goutam
-Built for Task 1 – Secure Auth System
+## API Routes
+
+- `POST /api/register` - User registration
+- `POST /api/auth/signin` - User login
+- `POST /api/auth/signout` - User logout
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+## Security Features
+
+- Password hashing with bcryptjs
+- JWT-based sessions
+- CSRF protection
+- Route-level authentication
+- Role-based access control
+- SQL injection prevention with Drizzle ORM
+
+## Links
+
+- **GitHub Repository**: [https://github.com/goutam-khowal/PRODIGY_FS_01](https://github.com/goutam-khowal/PRODIGY_FS_01)
+- **Live Demo**: [https://prodigyfs01.vercel.app/](https://prodigyfs01.vercel.app/)
+
